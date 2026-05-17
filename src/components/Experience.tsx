@@ -84,20 +84,20 @@ export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceP
         {/* Spawn 2 Beyblades with initial inward velocity */}
         <Beyblade 
           id="p1"
-          position={[-4, 1.5, 0]} 
+          position={[-2.2, 1.0, 0]} 
           color="#0066ff" 
           initialSpin={180} 
-          initialVelocity={[5, 0, 2]}
+          initialVelocity={[2, 0, 1]}
           onStateChange={(s) => s !== "active" && checkWinner("p1", s)}
           apiRef={p1Ref}
           config={p1Config}
         />
         <Beyblade 
           id="p2"
-          position={[4, 1.5, 1]} 
+          position={[2.2, 1.0, 0.5]} 
           color="#ff6600" 
           initialSpin={-180} 
-          initialVelocity={[-5, 0, -2]}
+          initialVelocity={[-2, 0, -1]}
           onStateChange={(s) => s !== "active" && checkWinner("p2", s)}
           apiRef={p2Ref}
           config={p2Config}
