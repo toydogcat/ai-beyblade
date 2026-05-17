@@ -14,6 +14,7 @@ export default function App() {
   const [gameId, setGameId] = useState(0);
   const [mode, setMode] = useState<"cinematic" | "sim">("cinematic");
   const [stats, setStats] = useState({ p1Wins: 0, p2Wins: 0, draws: 0 });
+  const [roundWinner, setRoundWinner] = useState<"p1" | "p2" | "draw" | null>(null);
 
   // Individual Physics Configurations for both Beyblades
   const [p1Config, setP1Config] = useState({
@@ -46,6 +47,7 @@ export default function App() {
   const t = translations[lang];
 
   const resetGame = () => {
+    setRoundWinner(null);
     setGameId((prev) => prev + 1);
   };
 
@@ -298,6 +300,66 @@ export default function App() {
           {/* Stadium Overlay Grid */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-dots" />
           
+          {/* Futuristic Top Scoreboard HUD */}
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-6 bg-[#0D0F12]/85 backdrop-blur-md border border-white/10 px-8 py-2.5 rounded-full shadow-[0_4px_30px_rgba(0,0,0,0.8)] pointer-events-none">
+            <div className="flex items-center gap-3">
+              <span className="w-3.5 h-3.5 rounded-full bg-[#0066ff] shadow-[0_0_12px_rgba(0,102,255,0.7)]" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-[#0066ff] font-sans">
+                {lang === "zh" ? "藍色 P1" : "BLUE P1"}
+              </span>
+            </div>
+            <div className="flex items-center gap-4 px-5 py-1.5 bg-white/5 border border-white/5 rounded-md font-mono text-xl font-black text-white">
+              <span className="text-blue-500">{stats.p1Wins}</span>
+              <span className="text-gray-600 font-sans text-xs font-normal">:</span>
+              <span className="text-orange-500">{stats.p2Wins}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-[11px] font-black uppercase tracking-widest text-[#ff6600] font-sans">
+                {lang === "zh" ? "橘色 P2" : "ORANGE P2"}
+              </span>
+              <span className="w-3.5 h-3.5 rounded-full bg-[#ff6600] shadow-[0_0_12px_rgba(255,102,0,0.7)]" />
+            </div>
+          </div>
+
+          {/* Immersive Victory Announcement Overlay */}
+          {roundWinner && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className={`px-12 py-8 rounded-lg border text-center shadow-[0_10px_50px_rgba(0,0,0,0.9)] max-w-sm w-full mx-4 ${
+                  roundWinner === "p1"
+                    ? "bg-[#0066ff]/10 border-[#0066ff]/30 shadow-[#0066ff]/20 text-[#0066ff]"
+                    : roundWinner === "p2"
+                    ? "bg-[#ff6600]/10 border-[#ff6600]/30 shadow-[#ff6600]/20 text-[#ff6600]"
+                    : "bg-white/10 border-white/20 text-white"
+                }`}
+              >
+                <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center bg-black/40 border border-white/10">
+                  <Zap size={20} className={roundWinner === "p1" ? "text-blue-500" : roundWinner === "p2" ? "text-orange-500" : "text-white"} />
+                </div>
+                <h2 className="text-[10px] uppercase font-bold tracking-[0.3em] opacity-60 mb-2 font-mono">
+                  {lang === "zh" ? "戰鬥結束" : "MATCH ENDED"}
+                </h2>
+                <h1 className="text-2xl font-black italic tracking-wider uppercase font-sans">
+                  {roundWinner === "draw"
+                    ? (lang === "zh" ? "雙方平手！" : "ROUND DRAW!")
+                    : roundWinner === "p1"
+                    ? (lang === "zh" ? "藍色陀螺 獲勝！" : "BLUE BEYBLADE WINS!")
+                    : (lang === "zh" ? "橘色陀螺 獲勝！" : "ORANGE BEYBLADE WINS!")
+                  }
+                </h1>
+                <p className="text-[9px] text-gray-500 mt-5 tracking-[0.2em] uppercase font-mono">
+                  {lang === "zh" ? "即將重新發射..." : "NEXT LAUNCH INCOMING..."}
+                </p>
+              </motion.div>
+            </motion.div>
+          )}
+
           {/* Main Canvas Viewport */}
           <div className="absolute inset-0 z-0">
             <Canvas shadows key={gameId}>
@@ -306,16 +368,19 @@ export default function App() {
                 p1Config={p1Config}
                 p2Config={p2Config}
                 onMatchEnd={(winner) => {
-                  if (mode === "sim") {
-                    setStats(prev => ({
-                      ...prev,
-                      p1Wins: winner === "p1" ? prev.p1Wins + 1 : prev.p1Wins,
-                      p2Wins: winner === "p2" ? prev.p2Wins + 1 : prev.p2Wins,
-                      draws: winner === "draw" ? prev.draws + 1 : prev.draws,
-                    }));
-                    // Auto reset in sim mode
-                    setTimeout(resetGame, 1000);
-                  }
+                  setStats(prev => ({
+                    ...prev,
+                    p1Wins: winner === "p1" ? prev.p1Wins + 1 : prev.p1Wins,
+                    p2Wins: winner === "p2" ? prev.p2Wins + 1 : prev.p2Wins,
+                    draws: winner === "draw" ? prev.draws + 1 : prev.draws,
+                  }));
+                  
+                  setRoundWinner(winner);
+                  const delay = mode === "sim" ? 1000 : 3000;
+                  setTimeout(() => {
+                    setRoundWinner(null);
+                    resetGame();
+                  }, delay);
                 }} 
               />
             </Canvas>

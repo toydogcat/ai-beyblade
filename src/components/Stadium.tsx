@@ -3,16 +3,16 @@ import * as THREE from "three";
 
 export function Stadium() {
   const radius = 10;
-  const bottomRadius = 5.0; // Steeper sloped bowl (was 7.5)
+  const bottomRadius = 2.0; // Much narrower flat center (was 5.0) to force frequent clashes!
   const height = 4.5;       // Much deeper arena (was 2.5)
   const segments = 64;
 
   // Segment calculations for thick box colliders
   const numSegments = 32;
-  const R_mid = (radius + bottomRadius) / 2; // 7.5
-  const deltaZ = radius - bottomRadius; // 5.0
-  const slopeLength = Math.sqrt(height * height + deltaZ * deltaZ); // ~6.73
-  const tiltAngle = Math.atan2(deltaZ, height); // tilt outward
+  const R_mid = (radius + bottomRadius) / 2; // 6.0 (was 7.5)
+  const deltaZ = radius - bottomRadius; // 8.0 (was 5.0)
+  const slopeLength = Math.sqrt(height * height + deltaZ * deltaZ); // ~9.18 (was ~6.73)
+  const tiltAngle = Math.atan2(deltaZ, height); // tilt outward (~60 degrees, steeper gravity funnel)
 
   const segmentWidth = ((2 * Math.PI * R_mid) / numSegments) * 1.15; // 15% overlap to ensure no vertical gaps
   const wallThickness = 2.0; // 2.0 meters thick solid box!
@@ -68,9 +68,9 @@ export function Stadium() {
 
       {/* Physics World: Deep Bowl & Forcefield Boundaries */}
       <group>
-        {/* Solid Ground Base - Expanded to 6.0 to eliminate seams inside the 2.0m walls */}
+        {/* Solid Ground Base - Expanded to 3.0 to eliminate seams inside the narrower 2.0m walls */}
         <RigidBody type="fixed">
-          <CylinderCollider args={[0.1, 6.0]} position={[0, -0.1, 0]} friction={0.05} restitution={0.85} />
+          <CylinderCollider args={[0.1, 3.0]} position={[0, -0.1, 0]} friction={0.05} restitution={0.85} />
         </RigidBody>
         
         {/* Steep Sloped Walls (32 Overlapping Solid Cuboid Colliders) */}

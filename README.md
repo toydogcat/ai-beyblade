@@ -49,6 +49,29 @@
     *   **中文**: 高速背景賽局計算與自動重啟，詳細記錄兩名選手的勝率、勝負盤數與 X-Dash 觸發次數，用於分析陀螺配件在不同物理配置下的勝率曲線。
     *   **English**: Enables fast-paced background simulation and automatic reset, logging wins, losses, win rates, and parts telemetry over time to analyze part combinations.
 
+
+---
+
+## 🏆 專業戰鬥陀螺 X 勝負規則 (Official Beyblade X Victory Rules)
+
+本模擬器高度還原了最新世代 **戰鬥陀螺 X (Beyblade X)** 大賽的官方勝負判定系統，採取先獲得 **4 分** 者勝出的點數機制：
+
+### 1. 旋轉結束 (Spin Finish / 擊停勝) — 🌟 1 分
+*   **規則**: 雙方陀螺在場內對決，其中一顆陀螺旋轉動能耗盡先行停止，而另一顆陀螺依然在旋轉，旋轉時間較長者獲勝。
+*   **Stamina Win**: Decided when one Beyblade stops spinning while the other continues rotating. Awards 1 point.
+
+### 2. 擊飛出場 (Over Finish / 擊出場外) — 🌟🌟 2 分
+*   **規則**: 陀螺受到強力衝撞，飛出賽場界限或掉入競技場邊緣的「出界口袋 (Over Zone)」。
+*   **Knockout Win**: Triggered when a Beyblade is knocked out of bounds or falls into the over zones. Awards 2 points.
+
+### 3. 爆裂結束 (Burst Finish / 擊爆勝) — 🌟🌟 2 分
+*   **規則**: 陀螺承受強烈碰撞力道，超過其防爆鎖扣承受上限，在空中瞬間「解體」分裂成晶片、鐵環與底軸碎片。
+*   **Burst Win**: Decided when high impact forces disassemble the opponent's Beyblade into its discrete components (Blade, Ratchet, and Bit). Awards 2 points.
+
+### 4. 極限結束 (Extreme Finish / 極限擊飛) — 🌟🌟🌟 3 分
+*   **規則**: 最震撼的致命一擊！當陀螺卡住邊緣齒輪軌道產生超高速 X-Dash 衝刺後，將對手以毀滅性速度撞入正前方的「極限深槽 (Extreme Zone)」。
+*   **Extreme Win**: The ultimate signature move! Decided when a Beyblade uses X-Dash tangential momentum to blast the opponent through the front Extreme Zone. Awards 3 points.
+
 ---
 
 ## 🛠️ 技術棧 (Tech Stack)
