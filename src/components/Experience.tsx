@@ -75,7 +75,7 @@ export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceP
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
       <Physics 
-        gravity={[0, -45, 0]} 
+        gravity={[0, -15, 0]} 
         debug={false}
         timeStep={1/60 * timeScale}
       >
@@ -84,20 +84,20 @@ export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceP
         {/* Spawn 2 Beyblades with initial inward velocity */}
         <Beyblade 
           id="p1"
-          position={[-2.2, 1.0, 0]} 
+          position={[-2.5, 0.5, 0]} 
           color="#0066ff" 
-          initialSpin={180} 
-          initialVelocity={[2, 0, 1]}
+          initialSpin={80} 
+          initialVelocity={[2.5, 0, 1]}
           onStateChange={(s) => s !== "active" && checkWinner("p1", s)}
           apiRef={p1Ref}
           config={p1Config}
         />
         <Beyblade 
           id="p2"
-          position={[2.2, 1.0, 0.5]} 
+          position={[2.5, 0.5, 0.5]} 
           color="#ff6600" 
-          initialSpin={-180} 
-          initialVelocity={[-2, 0, -1]}
+          initialSpin={-80} 
+          initialVelocity={[-2.5, 0, -1]}
           onStateChange={(s) => s !== "active" && checkWinner("p2", s)}
           apiRef={p2Ref}
           config={p2Config}

@@ -3,23 +3,23 @@ import * as THREE from "three";
 
 export function Stadium() {
   const radius = 10;
-  const bottomRadius = 2.0; // Much narrower flat center (was 5.0) to force frequent clashes!
-  const height = 4.5;       // Much deeper arena (was 2.5)
+  const bottomRadius = 4.0; // Wider flat center area (was 2.0)
+  const height = 2.0;       // Shallower slope (was 4.5)
   const segments = 64;
 
   // Segment calculations for thick box colliders
   const numSegments = 32;
-  const R_mid = (radius + bottomRadius) / 2; // 6.0 (was 7.5)
-  const deltaZ = radius - bottomRadius; // 8.0 (was 5.0)
-  const slopeLength = Math.sqrt(height * height + deltaZ * deltaZ); // ~9.18 (was ~6.73)
-  const tiltAngle = Math.atan2(deltaZ, height); // tilt outward (~60 degrees, steeper gravity funnel)
+  const R_mid = (radius + bottomRadius) / 2; // 7.0 (was 6.0)
+  const deltaZ = radius - bottomRadius; // 6.0 (was 8.0)
+  const slopeLength = Math.sqrt(height * height + deltaZ * deltaZ); // ~6.32 (was ~9.18)
+  const tiltAngle = Math.atan2(deltaZ, height); // Shallower slope (~71.5 degrees)
 
-  const segmentWidth = ((2 * Math.PI * R_mid) / numSegments) * 1.15; // 15% overlap to ensure no vertical gaps
+  const segmentWidth = ((2 * Math.PI * R_mid) / numSegments) * 1.15; // 15% overlap
   const wallThickness = 2.0; // 2.0 meters thick solid box!
 
   // Forcefield segment calculations
   const ffHeight = 6.0;
-  const ffCenterY = height + ffHeight / 2; // 7.5
+  const ffCenterY = height + ffHeight / 2; // 5.0
   const ffWidth = ((2 * Math.PI * radius) / numSegments) * 1.15; // 15% overlap
 
   return (
@@ -68,13 +68,13 @@ export function Stadium() {
 
       {/* Physics World: Deep Bowl & Forcefield Boundaries */}
       <group>
-        {/* Solid Ground Base - Expanded to 3.0 to eliminate seams inside the narrower 2.0m walls */}
+        {/* Solid Ground Base - Expanded to 5.0 to eliminate seams inside the 4.0m walls */}
         <RigidBody type="fixed">
-          <CylinderCollider args={[0.1, 3.0]} position={[0, -0.1, 0]} friction={0.05} restitution={0.85} />
+          <CylinderCollider args={[0.1, 5.0]} position={[0, -0.1, 0]} friction={0.05} restitution={0.2} />
         </RigidBody>
         
         {/* Steep Sloped Walls (32 Overlapping Solid Cuboid Colliders) */}
-        <RigidBody type="fixed" friction={0.05} restitution={0.85}>
+        <RigidBody type="fixed" friction={0.5} restitution={0.2}>
           {Array.from({ length: numSegments }).map((_, i) => {
             const angle = (i * 2 * Math.PI) / numSegments;
             return (
@@ -88,7 +88,7 @@ export function Stadium() {
         </RigidBody>
 
         {/* Tall Laser Forcefield Boundary (32 Overlapping Solid Cuboid Colliders) */}
-        <RigidBody type="fixed" friction={0.1} restitution={0.9}>
+        <RigidBody type="fixed" friction={0.3} restitution={0.2}>
           {Array.from({ length: numSegments }).map((_, i) => {
             const angle = (i * 2 * Math.PI) / numSegments;
             return (

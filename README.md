@@ -25,10 +25,13 @@
     *   **中文**: 對陀螺底端的軸心進行高擬真摩擦力配置，讓陀螺移動滑順且持久。
     *   **English**: Features authentic low-friction profiling for the bottom tip (Bit), allowing smooth, enduring, and fluid orbit movements.
 
-### 2. 💥 擬真彈鬥戰鬥碰撞 (Premium Elastic Combat)
-*   **高彈性碰撞機制 (High Restitution Bounding)**
-    *   **中文**: 透過單獨為每個陀螺的裝甲、阻力外環與軸心設定手動碰撞體（Cylinder Colliders），並配置高彈力係數（`restitution = 0.85`）與超低碰撞摩擦，陀螺碰撞時會產生極具震撼感的劇烈彈開與反彈（彈鬥）。
-    *   **English**: Defines manual colliders for each part (Bit, Ratchet, and Blade) with high restitution (`restitution = 0.85`) and low contact friction, making tops bounce away with massive cinematic force upon impacts.
+### 2. 💥 真實厚重感碰撞物理 (Realistic Heavyweight Physics)
+*   **低彈力真實碰撞 (Low Restitution & High Friction)**
+    *   **中文**: 所有陀螺零件與場地板塊的彈力（`restitution`）均統一限制在極低的 `0.1` ~ `0.2`。斜坡邊緣配置了高達 `0.5` 的摩擦係數，消除不自然的彈力球反彈，讓碰撞顯得極具厚實金屬敲擊質感。
+    *   **English**: All Beyblade components and stadium colliders are configured with exceptionally low restitution (`0.1` to `0.2`). Stadium walls feature high friction (`0.5`), eliminating unnatural bouncing ball dynamics in favor of authentic metallic thuds.
+*   **碰撞能耗減速 (Impact Energy Dissipation)**
+    *   **中文**: 每次發生衝擊對碰時，除了判定爆裂力道外，物理引擎會微幅削減陀螺雙方的線性速度與角轉速（減少 15% 速度），逼真還原實體金屬碰撞的阻尼能耗與打擊磨損感。
+    *   **English**: During active clashes, linear and angular velocities are reduced by 15% to model structural impact energy dissipation and wear.
 *   **爆裂系統 (Burst System)**
     *   **中文**: 當兩隻陀螺劇烈碰撞產生的碰撞力道（Impact Force）超過爆裂閾值（Burst Threshold）時，陀螺會瞬間瓦解爆裂成「戰神晶片/軸心 (Bit)」、「鐵環/鋼鐵輪盤 (Ratchet)」與「結晶輪盤/攻擊刃 (Blade)」碎片，四處飛散，重現戰鬥陀螺 X 最震撼的 Burst 瞬間！
     *   **English**: When impact force exceeds the burst threshold, the top instantaneously disintegrates into flyaway fragments (Bit, Ratchet, and Blade), perfectly recreating the ultimate dramatic Burst moments!

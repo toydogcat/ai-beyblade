@@ -20,7 +20,7 @@ interface BeybladeProps {
   config: BeybladeConfig;
 }
 
-export function Beyblade({ id, position, color, initialSpin = 150, initialVelocity = [0, 0, 0], onStateChange, apiRef, config }: BeybladeProps) {
+export function Beyblade({ id, position, color, initialSpin = 80, initialVelocity = [0, 0, 0], onStateChange, apiRef, config }: BeybladeProps) {
   const rb = useRef<RapierRigidBody>(null);
   const layer1 = useRef<RapierRigidBody>(null); // Blade
   const layer2 = useRef<RapierRigidBody>(null); // Ratchet
@@ -94,6 +94,17 @@ export function Beyblade({ id, position, color, initialSpin = 150, initialVeloci
 
     const impactForce = payload.totalForceMagnitude;
     
+    // Reduce angular velocity and linear velocity to simulate heavy energy loss on clashes
+    if (rb.current) {
+      const body = rb.current;
+      const currentAngVel = body.angvel();
+      const currentLinVel = body.linvel();
+      
+      // Mildly damp rotational and linear velocity on impacts (lose 15% velocity)
+      body.setAngvel({ x: currentAngVel.x * 0.85, y: currentAngVel.y * 0.85, z: currentAngVel.z * 0.85 }, true);
+      body.setLinvel({ x: currentLinVel.x * 0.85, y: currentLinVel.y * 0.85, z: currentLinVel.z * 0.85 }, true);
+    }
+    
     if (impactForce > BURST_THRESHOLD) {
       triggerBurst();
     }
@@ -126,7 +137,7 @@ export function Beyblade({ id, position, color, initialSpin = 150, initialVeloci
           angularVelocity={[0, initialSpin, 0]}
           linearVelocity={initialVelocity}
           friction={0.2}
-          restitution={0.6}
+          restitution={0.1}
           linearDamping={0.15}
           angularDamping={0.25}
           canSleep={false}
@@ -140,14 +151,14 @@ export function Beyblade({ id, position, color, initialSpin = 150, initialVeloci
               <cylinderGeometry args={[0.05, 0.2, 0.2, 8]} />
               <meshStandardMaterial color="#444" metalness={1} roughness={0.1} />
             </mesh>
-            <CylinderCollider args={[0.1, 0.1]} position={[0, -0.4, 0]} friction={config.friction} restitution={0.6} />
+            <CylinderCollider args={[0.1, 0.1]} position={[0, -0.4, 0]} friction={config.friction} restitution={0.1} />
 
             {/* Ratchet */}
             <mesh position={[0, -0.1, 0]}>
               <cylinderGeometry args={[0.6, 0.5, 0.3, 16]} />
               <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
             </mesh>
-            <CylinderCollider args={[0.15, 0.6]} position={[0, -0.1, 0]} friction={0.1} restitution={config.restitution} />
+            <CylinderCollider args={[0.15, 0.6]} position={[0, -0.1, 0]} friction={0.1} restitution={0.1} />
 
             {/* Blade */}
             <mesh position={[0, 0.2, 0]}>
@@ -160,7 +171,7 @@ export function Beyblade({ id, position, color, initialSpin = 150, initialVeloci
                 </mesh>
               ))}
             </mesh>
-            <CylinderCollider args={[0.1, 0.9]} position={[0, 0.2, 0]} friction={0.1} restitution={config.restitution} />
+            <CylinderCollider args={[0.1, 0.9]} position={[0, 0.2, 0]} friction={0.1} restitution={0.1} />
 
             {/* Mass Center Offset (Top Heavy) */}
             <CylinderCollider args={[0.05, 0.1]} position={[0, 0.35, 0]} mass={config.mass} />
