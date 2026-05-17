@@ -75,7 +75,7 @@ export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceP
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
       <Physics 
-        gravity={[0, -20, 0]} 
+        gravity={[0, -45, 0]} 
         debug={false}
         timeStep={1/60 * timeScale}
       >

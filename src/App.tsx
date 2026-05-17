@@ -390,7 +390,7 @@ export default function App() {
           <div className="absolute bottom-8 left-8 text-[10px] font-mono text-gray-500 pointer-events-none z-10">
             {t.gridX}: 102.4 <br /> 
             {t.gridY}: -42.9 <br /> 
-            {t.zGravity}: -9.81m/s²
+            {t.zGravity}: -45.00m/s²
           </div>
           <div className="absolute top-8 right-8 flex gap-2 z-10">
             <button className="px-3 py-1 bg-white/5 border border-white/10 text-[10px] rounded hover:bg-white/10 transition-colors pointer-events-auto flex items-center gap-2">
