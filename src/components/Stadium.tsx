@@ -1,4 +1,4 @@
-import { RigidBody, CylinderCollider } from "@react-three/rapier";
+import { RigidBody, CylinderCollider, CuboidCollider } from "@react-three/rapier";
 import * as THREE from "three";
 
 export function Stadium() {
@@ -6,6 +6,21 @@ export function Stadium() {
   const bottomRadius = 5.0; // Steeper sloped bowl (was 7.5)
   const height = 4.5;       // Much deeper arena (was 2.5)
   const segments = 64;
+
+  // Segment calculations for thick box colliders
+  const numSegments = 32;
+  const R_mid = (radius + bottomRadius) / 2; // 7.5
+  const deltaZ = radius - bottomRadius; // 5.0
+  const slopeLength = Math.sqrt(height * height + deltaZ * deltaZ); // ~6.73
+  const tiltAngle = Math.atan2(deltaZ, height); // tilt outward
+
+  const segmentWidth = ((2 * Math.PI * R_mid) / numSegments) * 1.15; // 15% overlap to ensure no vertical gaps
+  const wallThickness = 2.0; // 2.0 meters thick solid box!
+
+  // Forcefield segment calculations
+  const ffHeight = 6.0;
+  const ffCenterY = height + ffHeight / 2; // 7.5
+  const ffWidth = ((2 * Math.PI * radius) / numSegments) * 1.15; // 15% overlap
 
   return (
     <group>
@@ -53,23 +68,37 @@ export function Stadium() {
 
       {/* Physics World: Deep Bowl & Forcefield Boundaries */}
       <group>
-        {/* Solid Ground Base */}
+        {/* Solid Ground Base - Expanded to 6.0 to eliminate seams inside the 2.0m walls */}
         <RigidBody type="fixed">
-          <CylinderCollider args={[0.1, bottomRadius]} position={[0, -0.1, 0]} friction={0.05} restitution={0.85} />
+          <CylinderCollider args={[0.1, 6.0]} position={[0, -0.1, 0]} friction={0.05} restitution={0.85} />
         </RigidBody>
         
-        {/* Steep Sloped Walls (Trimesh) */}
-        <RigidBody type="fixed" colliders="trimesh" friction={0.05} restitution={0.85}>
-          <mesh visible={false} position={[0, height / 2, 0]}>
-            <cylinderGeometry args={[radius, bottomRadius, height, segments, 1, true]} />
-          </mesh>
+        {/* Steep Sloped Walls (32 Overlapping Solid Cuboid Colliders) */}
+        <RigidBody type="fixed" friction={0.05} restitution={0.85}>
+          {Array.from({ length: numSegments }).map((_, i) => {
+            const angle = (i * 2 * Math.PI) / numSegments;
+            return (
+              <group key={`slope-${i}`} rotation={[0, -angle, 0]}>
+                <group rotation={[tiltAngle, 0, 0]} position={[0, height / 2, R_mid]}>
+                  <CuboidCollider args={[segmentWidth / 2, slopeLength / 2, wallThickness / 2]} />
+                </group>
+              </group>
+            );
+          })}
         </RigidBody>
 
-        {/* Tall Laser Forcefield Boundary (Hollow Trimesh Wall) */}
-        <RigidBody type="fixed" colliders="trimesh" friction={0.1} restitution={0.9}>
-           <mesh visible={false} position={[0, height + 3.0, 0]}>
-              <cylinderGeometry args={[radius, radius, 6.0, segments, 1, true]} />
-           </mesh>
+        {/* Tall Laser Forcefield Boundary (32 Overlapping Solid Cuboid Colliders) */}
+        <RigidBody type="fixed" friction={0.1} restitution={0.9}>
+          {Array.from({ length: numSegments }).map((_, i) => {
+            const angle = (i * 2 * Math.PI) / numSegments;
+            return (
+              <group key={`ff-${i}`} rotation={[0, -angle, 0]}>
+                <group position={[0, ffCenterY, radius]}>
+                  <CuboidCollider args={[ffWidth / 2, ffHeight / 2, wallThickness / 2]} />
+                </group>
+              </group>
+            );
+          })}
         </RigidBody>
       </group>
 

@@ -19,21 +19,15 @@ export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceP
   const matchEnded = useRef(false);
 
   useFrame((state, delta) => {
-    if (mode !== "cinematic") {
-      if (timeScale !== 1) setTimeScale(1);
-      return;
-    }
-
-    // Cinematic slow motion logic
-    // If Beyblades are very close, slow down time
-    if (p1Ref.current && p2Ref.current) {
+    // 1. Cinematic slow motion logic
+    if (mode === "cinematic" && p1Ref.current && p2Ref.current) {
       const p1Pos = p1Ref.current.translation();
       const p2Pos = p2Ref.current.translation();
       const distSq = 
         Math.pow(p1Pos.x - p2Pos.x, 2) + 
         Math.pow(p1Pos.z - p2Pos.z, 2);
 
-      // Slow motion threshold (dist < 3 -> distSq < 9)
+      // Slow motion threshold (dist < 4 -> distSq < 16)
       if (distSq < 16) {
         // More stable time scaling
         const targetScale = Math.max(0.2, Math.sqrt(distSq) / 4);
@@ -41,8 +35,16 @@ export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceP
       } else {
         setTimeScale(prev => prev + (1 - prev) * 0.05);
       }
+    } else {
+      if (timeScale !== 1) setTimeScale(1);
+    }
 
-      // Out of bounds check (radius = 10, so 15 is safe boundary)
+    // 2. Out of bounds check (Runs globally in ALL simulation modes!)
+    if (p1Ref.current && p2Ref.current) {
+      const p1Pos = p1Ref.current.translation();
+      const p2Pos = p2Ref.current.translation();
+
+      // Safe outer boundary limit check
       if (Math.abs(p1Pos.x) > 15 || Math.abs(p1Pos.z) > 15 || p1Pos.y < -2) {
         checkWinner("p1", "stopped");
       }
