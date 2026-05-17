@@ -41,11 +41,10 @@ export function Stadium() {
         </RigidBody>
 
         {/* Outer Guard Rail (Invisible Wall) */}
-        <RigidBody type="fixed">
+        <RigidBody type="fixed" colliders="trimesh">
            <mesh visible={false} position={[0, height + 1, 0]}>
               <cylinderGeometry args={[radius + 0.5, radius, 5, segments, 1, true]} />
            </mesh>
-           <CylinderCollider args={[2.5, radius]} position={[0, 2.5, 0]} />
         </RigidBody>
       </group>
 

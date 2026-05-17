@@ -2,15 +2,17 @@ import { Suspense, useState, useRef } from "react";
 import { Physics } from "@react-three/rapier";
 import { OrbitControls, PerspectiveCamera, Environment, Stars } from "@react-three/drei";
 import { Stadium } from "./Stadium";
-import { Beyblade } from "./Beyblade";
+import { Beyblade, BeybladeConfig } from "./Beyblade";
 import { useFrame } from "@react-three/fiber";
 
 interface ExperienceProps {
   mode: "cinematic" | "sim";
   onMatchEnd: (winner: "p1" | "p2" | "draw") => void;
+  p1Config: BeybladeConfig;
+  p2Config: BeybladeConfig;
 }
 
-export function Experience({ mode, onMatchEnd }: ExperienceProps) {
+export function Experience({ mode, onMatchEnd, p1Config, p2Config }: ExperienceProps) {
   const [timeScale, setTimeScale] = useState(1);
   const p1Ref = useRef<any>(null);
   const p2Ref = useRef<any>(null);
@@ -86,6 +88,7 @@ export function Experience({ mode, onMatchEnd }: ExperienceProps) {
           initialVelocity={[5, 0, 2]}
           onStateChange={(s) => s !== "active" && checkWinner("p1", s)}
           apiRef={p1Ref}
+          config={p1Config}
         />
         <Beyblade 
           id="p2"
@@ -95,6 +98,7 @@ export function Experience({ mode, onMatchEnd }: ExperienceProps) {
           initialVelocity={[-5, 0, -2]}
           onStateChange={(s) => s !== "active" && checkWinner("p2", s)}
           apiRef={p2Ref}
+          config={p2Config}
         />
       </Physics>
       

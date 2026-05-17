@@ -46,7 +46,15 @@ export const translations = {
     resetArena: "重設沙場",
     damping: "阻尼",
     friction: "摩擦力",
-    realtimeSim: "即時模擬"
+    realtimeSim: "即時模擬",
+    
+    // New parameters configuration keys
+    p1Label: "P1 藍色陀螺",
+    p2Label: "P2 橘色陀螺",
+    restitutionLabel: "防禦環彈性 (反彈力)",
+    staminaBit: "持久型 (滑順低阻)",
+    balanceBit: "平衡型 (適中穩定)",
+    attackBit: "攻擊型 (高速高摩擦)"
   },
   en: {
     navLab: "Lab / Physics",
@@ -88,6 +96,14 @@ export const translations = {
     resetArena: "RESET ARENA",
     damping: "DAMPING",
     friction: "FRICTION",
-    realtimeSim: "Realtime Sim"
+    realtimeSim: "Realtime Sim",
+    
+    // New parameters configuration keys
+    p1Label: "P1 Blue Beyblade",
+    p2Label: "P2 Orange Beyblade",
+    restitutionLabel: "Ratchet Elasticity (Rebound)",
+    staminaBit: "Stamina Bit (Low Friction)",
+    balanceBit: "Balance Bit (Moderate Friction)",
+    attackBit: "Attack Bit (High Traction)"
   }
 };

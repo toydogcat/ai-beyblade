@@ -3,6 +3,12 @@ import { useRef, useState, useImperativeHandle } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
+export interface BeybladeConfig {
+  mass: number;
+  restitution: number;
+  friction: number;
+}
+
 interface BeybladeProps {
   id: string;
   position: [number, number, number];
@@ -11,9 +17,10 @@ interface BeybladeProps {
   initialVelocity?: [number, number, number];
   onStateChange?: (state: "active" | "burst" | "stopped") => void;
   apiRef?: React.RefObject<RapierRigidBody>;
+  config: BeybladeConfig;
 }
 
-export function Beyblade({ id, position, color, initialSpin = 150, initialVelocity = [0, 0, 0], onStateChange, apiRef }: BeybladeProps) {
+export function Beyblade({ id, position, color, initialSpin = 150, initialVelocity = [0, 0, 0], onStateChange, apiRef, config }: BeybladeProps) {
   const rb = useRef<RapierRigidBody>(null);
   const layer1 = useRef<RapierRigidBody>(null); // Blade
   const layer2 = useRef<RapierRigidBody>(null); // Ratchet
@@ -133,14 +140,14 @@ export function Beyblade({ id, position, color, initialSpin = 150, initialVeloci
               <cylinderGeometry args={[0.05, 0.2, 0.2, 8]} />
               <meshStandardMaterial color="#444" metalness={1} roughness={0.1} />
             </mesh>
-            <CylinderCollider args={[0.1, 0.1]} position={[0, -0.4, 0]} friction={0.05} restitution={0.6} />
+            <CylinderCollider args={[0.1, 0.1]} position={[0, -0.4, 0]} friction={config.friction} restitution={0.6} />
 
             {/* Ratchet */}
             <mesh position={[0, -0.1, 0]}>
               <cylinderGeometry args={[0.6, 0.5, 0.3, 16]} />
               <meshStandardMaterial color={color} metalness={0.5} roughness={0.3} />
             </mesh>
-            <CylinderCollider args={[0.15, 0.6]} position={[0, -0.1, 0]} friction={0.1} restitution={0.85} />
+            <CylinderCollider args={[0.15, 0.6]} position={[0, -0.1, 0]} friction={0.1} restitution={config.restitution} />
 
             {/* Blade */}
             <mesh position={[0, 0.2, 0]}>
@@ -153,10 +160,10 @@ export function Beyblade({ id, position, color, initialSpin = 150, initialVeloci
                 </mesh>
               ))}
             </mesh>
-            <CylinderCollider args={[0.1, 0.9]} position={[0, 0.2, 0]} friction={0.1} restitution={0.85} />
+            <CylinderCollider args={[0.1, 0.9]} position={[0, 0.2, 0]} friction={0.1} restitution={config.restitution} />
 
             {/* Mass Center Offset (Top Heavy) */}
-            <CylinderCollider args={[0.05, 0.1]} position={[0, 0.35, 0]} mass={5} />
+            <CylinderCollider args={[0.05, 0.1]} position={[0, 0.35, 0]} mass={config.mass} />
           </group>
         </RigidBody>
       )}
